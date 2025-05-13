@@ -1,4 +1,4 @@
-;;; gtp.el --- GTP GO back-end
+;;; go-backend-gtp.el --- GTP GO back-end
 
 ;; Copyright (C) 2008 2012  Free Software Foundation, Inc.
 
@@ -160,5 +160,5 @@
 (cl-defmethod go-dead ((gtp gtp))
   (signal 'unsupported-back-end-command (list gtp :dead)))
 
-(provide 'gtp)
-;;; gtp.el ends here
+(provide 'go-backend-gtp)
+;;; go-backend-gtp.el ends here

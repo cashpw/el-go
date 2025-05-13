@@ -1,4 +1,4 @@
-;;; gnugo.el --- gnugo GO back-end
+;;; go-backend-gnugo.el --- gnugo GO back-end
 
 ;; Copyright (C) 2008 2012  Free Software Foundation, Inc.
 
@@ -22,7 +22,7 @@
 
 ;;; CODE:
 (require 'go-api)
-(require 'gtp)
+(require 'go-backend-gtp)
 (require 'comint)
 
 (defun gnugo-gtp-commands ()
@@ -109,5 +109,5 @@ For example, the following changes the level of gnugo.
                                 (gnugo-command-to-string
                                  gnugo "final_status_list dead"))))))
 
-(provide 'gnugo)
-;;; gnugo.el ends here
+(provide 'go-backend-gnugo)
+;;; go-backend-gnugo.el ends here

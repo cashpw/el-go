@@ -1,4 +1,4 @@
-;;; sgf2el.el --- conversion between sgf and emacs-lisp
+;;; go-backend-sgf2el.el --- conversion between sgf and emacs-lisp
 
 ;; Copyright (C) 2012  Free Software Foundation, Inc.
 
@@ -67,24 +67,24 @@
         (re    (format "\\(%s\\|%s\\)" prop-re "\\(([[:space:]]*\\)*\\(;\\)"))
         last-node)
     (save-excursion (goto-char start)
-      (while (re-search-forward re end t)
-        (let ((start (marker-position start)))
-          (message "parsing %.2f%%"
-                   (* 100 (/ (float (- (point) start))
-                             (float (- (marker-position end) start))))))
-        (if (string= (match-string 6) ";")
-            (progn
-              (replace-match "(" nil nil nil 6)
-              (when last-node
-                (save-excursion (goto-char (match-beginning 0)) (insert ")")))
-              (setq last-node t))
-          (let* ((key (sgf2el-convert-prop-key (match-string 2)))
-                 (val (sgf2el-convert-prop-vals key
-                       (sgf2el-all-matches (match-string 3) prop-val-re 2)))
-                 (rep (format "%S " (cons key (if (= 1 (length val))
-                                                  (car val) val)))))
-            (replace-match rep nil 'literal))))
-      (when last-node (insert ")")))
+                    (while (re-search-forward re end t)
+                      (let ((start (marker-position start)))
+                        (message "parsing %.2f%%"
+                                 (* 100 (/ (float (- (point) start))
+                                           (float (- (marker-position end) start))))))
+                      (if (string= (match-string 6) ";")
+                          (progn
+                            (replace-match "(" nil nil nil 6)
+                            (when last-node
+                              (save-excursion (goto-char (match-beginning 0)) (insert ")")))
+                            (setq last-node t))
+                        (let* ((key (sgf2el-convert-prop-key (match-string 2)))
+                               (val (sgf2el-convert-prop-vals key
+                                                              (sgf2el-all-matches (match-string 3) prop-val-re 2)))
+                               (rep (format "%S " (cons key (if (= 1 (length val))
+                                                                (car val) val)))))
+                          (replace-match rep nil 'literal))))
+                    (when last-node (insert ")")))
     (message "parsing DONE")))
 
 (defun sgf2el-normalize (&optional buffer)
@@ -146,11 +146,11 @@
 
 (defun process-position (position-string)
   (cl-flet ((char-to-num (char)
-                      (cond
-                       ((or (< char ?A) (< ?z char))
-                        (error "sgf: invalid char %s" char))
-                       ((< char ?a) (+ 26 (- char ?A)))
-                       (t           (- char ?a)))))
+              (cond
+               ((or (< char ?A) (< ?z char))
+                (error "sgf: invalid char %s" char))
+               ((< char ?a) (+ 26 (- char ?A)))
+               (t           (- char ?a)))))
     (cons (char-to-num (aref position-string 0))
           (char-to-num (aref position-string 1)))))
 
@@ -184,5 +184,5 @@
             comments)))
 (add-to-list 'sgf2el-special-properties (cons :C #'process-comment))
 
-(provide 'sgf2el)
-;;; sgf2el.el ends here
+(provide 'go-backend-sgf2el)
+;;; go-backend-sgf2el.el ends here

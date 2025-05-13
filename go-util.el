@@ -64,8 +64,6 @@
       (let ((res (number-sequence a b)))
         (if tmp (nreverse res) res)))))
 
-(defun take (num list) (subseq list 0 num))
-
 (defun set-aget (list key new)
   (if (aget list key)
       (setf (cdr (assoc key list)) new)

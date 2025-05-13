@@ -1,4 +1,4 @@
-;;; sgf.el --- SGF GO back end
+;;; go-backend-sgf.el --- SGF GO back end
 
 ;; Copyright (C) 2012  Free Software Foundation, Inc.
 
@@ -192,5 +192,5 @@
 (cl-defmethod go-dead ((sgf sgf))
   (signal 'unsupported-back-end-command (list sgf :dead)))
 
-(provide 'sgf)
-;;; sgf.el ends here
+(provide 'go-backend-sgf)
+;;; go-backend-sgf.el ends here

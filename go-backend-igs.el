@@ -1,4 +1,4 @@
-;;; igs.el --- IGS GO back-end
+;;; go-backend-igs.el --- IGS GO back-end
 
 ;; Copyright (C) 2012-2013  Free Software Foundation, Inc.
 
@@ -206,14 +206,14 @@ This is used to re-send messages to keep the IGS server from timing out.")
 
 (cl-defmethod go-quit ((igs igs))
   (with-igs igs
-    (if (number igs)
-        (progn
-          ;; TOOD: ensure still on our server-side observation list
-          ;;       (e.g., hasn't been removed after a resignation)
-          (when (active igs)
-            (igs-send (format "observe %d" (number igs))))
-          (setf (number igs) nil))
-      (igs-send "quit"))))
+            (if (number igs)
+                (progn
+                  ;; TOOD: ensure still on our server-side observation list
+                  ;;       (e.g., hasn't been removed after a resignation)
+                  (when (active igs)
+                    (igs-send (format "observe %d" (number igs))))
+                  (setf (number igs) nil))
+              (igs-send "quit"))))
 
 (cl-defmethod go-score ((igs igs))
   (signal 'unsupported-back-end-command (list igs :score)))
@@ -276,10 +276,10 @@ This is used to re-send messages to keep the IGS server from timing out.")
 (defun igs-connect (igs)
   "Open a connection to `igs-server'."
   (cl-flet ((wait (prompt)
-                  (message "IGS waiting for %S..." prompt)
-                  (while (and (goto-char (or comint-last-input-end (point-min)))
-                              (not (re-search-forward prompt nil t)))
-                    (accept-process-output proc))))
+              (message "IGS waiting for %S..." prompt)
+              (while (and (goto-char (or comint-last-input-end (point-min)))
+                          (not (re-search-forward prompt nil t)))
+                (accept-process-output proc))))
     (let ((buffer (apply 'make-comint
                          igs-process-name
                          igs-telnet-command nil
@@ -393,8 +393,8 @@ This is used to re-send messages to keep the IGS server from timing out.")
   (if (aget (igs-current-game) :board)
       (with-current-buffer (buffer (aget (igs-current-game) :board))
         (with-backends backend
-          (when (equal (class-of backend) 'igs)
-            (setf (active backend) nil))))
+                       (when (equal (class-of backend) 'igs)
+                         (setf (active backend) nil))))
     (error "igs-handle-adjournment: no board!")))
 
 (defun igs-handle-resignation (color)
@@ -403,8 +403,8 @@ This is used to re-send messages to keep the IGS server from timing out.")
         (go-resign (aget (igs-current-game) :board))
         (with-current-buffer (buffer (aget (igs-current-game) :board))
           (with-backends backend
-            (when (equal (class-of backend) 'igs)
-              (setf (active backend) nil)))))
+                         (when (equal (class-of backend) 'igs)
+                           (setf (active backend) nil)))))
     (error "igs-handle-adjournment: no board!")))
 
 (defun igs-to-pos (color igs)
@@ -446,8 +446,8 @@ This is used to re-send messages to keep the IGS server from timing out.")
           (save-excursion
             (setf (number *igs-instance*) number)
             (make-instance 'board
-              :buffer (go-board *igs-instance*
-                                (make-instance 'sgf)))))
+                           :buffer (go-board *igs-instance*
+                                             (make-instance 'sgf)))))
     (when (aget (igs-current-game) :board)
       (igs-send (format "moves %s" number)))))
 
@@ -497,5 +497,5 @@ This is used to re-send messages to keep the IGS server from timing out.")
   (setf *igs-games* nil)
   (igs-send "games"))
 
-(provide 'igs)
-;;; igs.el ends here
+(provide 'go-backend-igs)
+;;; go-backend-igs.el ends here

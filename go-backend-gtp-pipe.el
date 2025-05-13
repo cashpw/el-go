@@ -1,4 +1,4 @@
-;;; gtp-pipe.el --- GTP backend through a pipe
+;;; go-backend-gtp-pipe.el --- GTP backend through a pipe
 
 ;; Copyright (C) 2013  Free Software Foundation, Inc.
 
@@ -22,7 +22,7 @@
 
 ;;; Code:
 (require 'go-api)
-(require 'gtp)
+(require 'go-backend-gtp)
 (require 'comint)
 
 (defvar *gtp-pipe-board* nil
@@ -81,7 +81,7 @@ port."
             (set (make-local-variable '*gtp-pipe-board*)
                  (save-excursion
                    (make-instance 'board
-                     :buffer (go-board gtp-pipe (make-instance 'sgf)))))
+                                  :buffer (go-board gtp-pipe (make-instance 'sgf)))))
             (set-process-filter (get-buffer-process (current-buffer))
                                 (make-go-insertion-filter
                                  #'gtp-pipe-process-filter)))
@@ -118,5 +118,5 @@ port."
 (cl-defmethod set-player-name ((gtp-pipe gtp-pipe) color name)
   (signal 'unsupported-back-end-command (list gtp-pipe :set-player-name name)))
 
-(provide 'gtp-pipe)
-;;; gtp-pipe.el ends here
+(provide 'go-backend-gtp-pipe)
+;;; go-backend-gtp-pipe.el ends here
