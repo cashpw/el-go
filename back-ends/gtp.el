@@ -69,7 +69,7 @@
       (t        nil))))
 
 (defun gtp-territory (gtp color)
-  (let ((output (ecase color
+  (let ((output (cl-ecase color
                   (:B (gtp-command gtp "final_status_list black_territory"))
                   (:W (gtp-command gtp "final_status_list white_territory")))))
     (mapcar (lambda (gtp-point) (gtp-to-pos color gtp-point))

@@ -400,7 +400,7 @@
         ;; mark open points
         (mapc (lambda (move)
                 (go-board-mark-point (point-of-pos (cddr move))
-                                     (go-board-cross (ecase (car move)
+                                     (go-board-cross (cl-ecase (car move)
                                                        (:B 'black)
                                                        (:W 'white)))))
               (with-backends back (go-territory back)))
@@ -409,7 +409,7 @@
                 (let* ((point (point-of-pos (cddr move)))
                        (color (car (get-text-property point :type))))
                   (go-board-mark-point point
-                                       (go-board-cross (ecase color
+                                       (go-board-cross (cl-ecase color
                                                          (:black 'white)
                                                          (:white 'black))))))
               (with-backends back (go-dead back)))
