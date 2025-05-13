@@ -1,0 +1,61 @@
+:PROPERTIES:
+:LAST_MODIFIED: [2025-05-13 Tue 13:12]
+:END:
+#+HTML_HEAD: <style>pre{background:#232323; color:#E6E1DC;} @media(min-width:800px){div#content{max-width:800px; padding:2em; margin:auto;}}</style>
+#+title: el-go -- Emacs interface to the game of GO
+#+author: Eric Schulte
+#+options: toc:1 ^:nil
+
+* Introduction
+:PROPERTIES:
+:CUSTOM_ID: introduction
+:END:
+
+The =el-go= library provides an Emacs interface to the game of GO. Specifically, a number of GO backends including the [[http://senseis.xmp.net/?SmartGameFormat][Smart Game Format]] (SGF) file format, the [[http://www.lysator.liu.se/~gunnar/gtp/][Go Text Protocol]] (GTP) which may be used to play against the [[http://www.gnu.org/software/gnugo/][gnugo]] program, and partial support for the [[http://en.wikipedia.org/wiki/IGS_Go_server][Internet Go Server]] (IGS) format which is /not/ an open standard and is thus reverse engineered from sanctioned IGS clients (currently this backend only really supports watching games, not playing them).
+
+* Installation
+:PROPERTIES:
+:CUSTOM_ID: installation
+:END:
+
+1. Clone the [[https://github.com/eschulte/el-go][git repository]].
+
+   #+begin_src sh
+   git clone git://github.com/eschulte/el-go.git
+   #+end_src
+
+2. Add the path to the cloned repository to your load-path.
+
+   #+begin_src emacs-lisp
+   (add-to-list 'load-path "/path/to/el-go")
+   #+end_src
+
+3. Load =el-go=.
+
+   #+begin_src emacs-lisp
+   (require 'go)
+   #+end_src
+
+* Usage
+:PROPERTIES:
+:CUSTOM_ID: usage
+:END:
+
+- go-play :: Use the =go-play= function (=M-x go-play=) to play a game of GO either against the gnugo program or against another person on the same machine.  Click on the board with the mouse to move.  Other commands are bound to keys and may be with listed (=C-h b=).
+
+  #+Caption: Playing gnugo on a 9 by 9 board with key bindings shown.
+  [[file:help.png]]
+
+- go-view-sgf :: Use the =go-view-sgf= function (=M-x go-view-sgf=) to load an SGF file and replay the saved game.  Use the right and left arrows to navigate the saved game.
+
+  #+Caption: This example shows the game in [[file:sgf-files/jp-ming-5.sgf]].
+  [[file:jp-ming-5.png]]
+
+- igs-get-games :: List the games currently being played on the [[http://en.wikipedia.org/wiki/IGS_Go_server][Internet Go Server]].  Currently only browsing and observing active games is supported.  When browsing games use the "up" and "down" arrows to sort by the current column, and press "enter" to observe the game on the current row.
+
+* License
+:PROPERTIES:
+:CUSTOM_ID: license
+:END:
+
+Licensed under the GPLV3, see the [[file:COPYING]] file in this directory for more information.
