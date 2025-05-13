@@ -54,10 +54,10 @@
 (defun board-size (board) (round (sqrt (length board))))
 
 (defun go-player-get (color property)
-  (plist-get (case color (:W *white*) (:B *black*)) property))
+  (plist-get (cl-case color (:W *white*) (:B *black*)) property))
 
 (defun go-player-set (color property value)
-  (let ((player (case color (:W *white*) (:B *black*))))
+  (let ((player (cl-case color (:W *white*) (:B *black*))))
     (plist-put player property value)))
 
 (defsetf go-player-get go-player-set)
@@ -87,16 +87,16 @@
 
 (defun apply-move (board move)
   (cl-flet ((bset (val data)
-               (let ((data (if (listp (car data)) data (list data))))
-                 (setf (aref board (pos-to-index (aget data :pos)
-                                                 (board-size board)))
-                       (case val
-                         (:B  :B)
-                         (:W  :W)
-                         (:LB (aget data :label))
-                         (:LW (aget data :label))
-                         (t nil))))))
-    (case (move-type move)
+              (let ((data (if (listp (car data)) data (list data))))
+                (setf (aref board (pos-to-index (aget data :pos)
+                                                (board-size board)))
+                      (cl-case val
+                        (:B  :B)
+                        (:W  :W)
+                        (:LB (aget data :label))
+                        (:LW (aget data :label))
+                        (t nil))))))
+    (cl-case (move-type move)
       (:move
        (bset (car move) (cdr move))
        (let ((color (if (equal :B (car move)) :B :W)))
@@ -160,8 +160,8 @@
 ;;; Visualization
 (defun board-header (board)
   (cl-flet ((hd (str hd)
-             (put-text-property 0 1 :type `(,hd . :offboard) str)
-             str))
+              (put-text-property 0 1 :type `(,hd . :offboard) str)
+              str))
     (let ((size (board-size board)))
       (concat "   "
               (hd " " :filler)
@@ -174,18 +174,18 @@
 (defun board-pos-to-string (board pos)
   (let ((size (board-size board)))
     (cl-flet ((emph (n)
-                 (cond
-                  ((= size 19)
-                   (or (= 3 n)
-                       (= 4 (- size n))
-                       (= n (/ (- size 1) 2))))
-                  ((= size 13)
-                   (or (= 3 n)
-                       (= 9 n)))
-                  ((= size 9)
-                   (or (= 2 n)
-                       (= 6 n)))))
-           (put (str prop val) (put-text-property 0 (length str) prop val str)))
+                (cond
+                 ((= size 19)
+                  (or (= 3 n)
+                      (= 4 (- size n))
+                      (= n (/ (- size 1) 2))))
+                 ((= size 13)
+                  (or (= 3 n)
+                      (= 9 n)))
+                 ((= size 9)
+                  (or (= 2 n)
+                      (= 6 n)))))
+              (put (str prop val) (put-text-property 0 (length str) prop val str)))
       (let* ((val (aref board (pos-to-index pos size)))
              (str (cond
                    ((equal val :W) white-piece)
@@ -238,25 +238,25 @@
 (defun go-board-paint (&optional start end)
   (interactive "r")
   (cl-flet ((ov (point face &optional back)
-             (let ((ovly (make-overlay point (1+ point))))
-               (overlay-put ovly 'go-pt point)
-               (overlay-put ovly 'face (sym-cat 'go-board face))
-               (when go-board-use-images
-                 (overlay-put ovly 'display
-                              (if (equal face 'filler)
-                                  '(space :width (18))
-                                (eval (sym-cat 'go-board 'image face back)))))
-               (push ovly *go-board-overlays*)))
-         (hide (point)
-               (let ((ovly (make-overlay point (1+ point))))
-                 (overlay-put ovly 'invisible t)
-                 (push ovly *go-board-overlays*))))
+              (let ((ovly (make-overlay point (1+ point))))
+                (overlay-put ovly 'go-pt point)
+                (overlay-put ovly 'face (sym-cat 'go-board face))
+                (when go-board-use-images
+                  (overlay-put ovly 'display
+                               (if (equal face 'filler)
+                                   '(space :width (18))
+                                 (eval (sym-cat 'go-board 'image face back)))))
+                (push ovly *go-board-overlays*)))
+            (hide (point)
+              (let ((ovly (make-overlay point (1+ point))))
+                (overlay-put ovly 'invisible t)
+                (push ovly *go-board-overlays*))))
     (let ((start (or start (point-min)))
           (end   (or end   (point-max))))
       (dolist (point (range start end))
         (if (get-text-property point :turn)
             (font-lock-prepend-text-property point (1+ point) 'face 'underline)
-          (let ((back (case (cdr (get-text-property point :type))
+          (let ((back (cl-case (cdr (get-text-property point :type))
                         (:tl 'top-left)
                         (:tr 'top-right)
                         (:bl 'bottom-left)
@@ -266,7 +266,7 @@
                         (:l  'left)
                         (:r  'right)
                         (:offboard 'offboard))))
-            (case (car (get-text-property point :type))
+            (cl-case (car (get-text-property point :type))
               (:header       nil)
               (:filler       (ov point 'filler back))
               (:hoshi        (ov point 'hoshi))
@@ -350,7 +350,7 @@
   (interactive)
   (let ((command (go-completing-read
                   "Action: " (mapcar #'symbol-name go-board-actions))))
-    (case (intern command)
+    (cl-case (intern command)
       (move    (message "make a move"))
       (resign  (message "game over"))
       (undo    (message "loser"))
@@ -358,7 +358,7 @@
 
 (defun go-board-move (&optional pos)
   (interactive)
-  (let* ((color (case *turn* (:B "black") (:W "white")))
+  (let* ((color (cl-case *turn* (:B "black") (:W "white")))
          (pos (or pos (cons (char-to-num
                              (aref (downcase
                                     (go-completing-read
@@ -374,7 +374,7 @@
                                           (range 1 *size*))))))))
          (move (cons *turn* (cons :pos pos))))
     (with-backends back
-      (setf (go-move back) move))
+                   (setf (go-move back) move))
     (setf *turn* (other-color *turn*))
     (apply-turn-to-board (list move)))
   (when *autoplay* (go-board-next)))
@@ -507,10 +507,10 @@
 
 (cl-defmethod set-go-move ((board board) move)
   (with-board board
-    (setf *turn* (other-color *turn*))
-    (apply-turn-to-board (list move))
-    (goto-char (point-of-pos (cddr move)))
-    (with-trackers tr (setf (go-move tr) move))))
+              (setf *turn* (other-color *turn*))
+              (apply-turn-to-board (list move))
+              (goto-char (point-of-pos (cddr move)))
+              (with-trackers tr (setf (go-move tr) move))))
 
 (cl-defmethod go-labels ((board board))
   (signal 'unsupported-back-end-command (list board :labels)))
@@ -560,16 +560,16 @@
 
 (cl-defmethod go-pass ((board board))
   (with-board board
-    (message "pass")
-    (setf *turn* (other-color *turn*))))
+              (message "pass")
+              (setf *turn* (other-color *turn*))))
 
 (cl-defmethod go-resign ((board board))
   (with-board board (message "%s resign" *turn*)))
 
 (cl-defmethod go-reset ((board board))
   (with-board board
-    (setf *history* nil)
-    (update-display)))
+              (setf *history* nil)
+              (update-display)))
 
 (cl-defmethod go-quit ((board board))
   (with-board board (go-quit)))

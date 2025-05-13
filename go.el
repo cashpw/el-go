@@ -63,8 +63,8 @@
 (defun go-play ()
   "Play a game of GO."
   (interactive)
-  (let ((back-end (case (intern (go-completing-read
-                                 "play against: " '("gnugo" "person")))
+  (let ((back-end (cl-case (intern (go-completing-read
+                                    "play against: " '("gnugo" "person")))
                     (gnugo  (go-instantiate 'gnugo))
                     (person (go-instantiate 'sgf)))))
     (with-current-buffer (apply #'go-board

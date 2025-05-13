@@ -45,7 +45,7 @@
 (require 'go-api)
 
 (defun gtp-expand-color (turn)
-  (case turn
+  (cl-case turn
     (:B "black")
     (:W "white")
     (t (error "gtp: unknown turn %S" turn))))
@@ -61,7 +61,7 @@
   "Convert an go ELEMENT to a gtp command."
   (let ((key (car element))
 	(val (cdr element)))
-    (case key
+    (cl-case key
       (:B       (format "black %s" (go-pos-to-gtp (aget (list val) :pos))))
       (:W       (format "white %s" (go-pos-to-gtp (aget (list val) :pos))))
       ((:SZ :S) (format "boardsize %s" val))
@@ -103,7 +103,7 @@
 
 (cl-defmethod go-move ((gtp gtp))
   (let* ((color (go-color gtp))
-         (move (case color
+         (move (cl-case color
                  (:B (gtp-command gtp "genmove_black"))
                  (:W (gtp-command gtp "genmove_white")))))
     (if (string= move "PASS")
@@ -132,9 +132,9 @@
   (signal 'unsupported-back-end-command (list gtp :set-alt alt)))
 
 (cl-defmethod go-color ((gtp gtp))
-  (case (condition-case err
-            (intern (car (split-string (gtp-command gtp "last_move"))))
-          (error 'white)) ('white :B) ('black :W)))
+  (cl-case (condition-case err
+               (intern (car (split-string (gtp-command gtp "last_move"))))
+             (error 'white)) ('white :B) ('black :W)))
 
 (cl-defmethod set-go-color ((gtp gtp) color)
   (signal 'unsupported-back-end-command (list gtp :set-color color)))

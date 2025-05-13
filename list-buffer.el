@@ -46,7 +46,7 @@ column respectively and may access the current buffer list
 through the `*buffer-list*' variable.")
 
 (defun list-buffer-create
-  (buffer list &optional headers enter-function refresh-function)
+    (buffer list &optional headers enter-function refresh-function)
   (pop-to-buffer buffer)
   (list-mode)
   (set (make-local-variable '*buffer-width*) (window-total-width))
@@ -74,8 +74,8 @@ through the `*buffer-list*' variable.")
 
 (defun list-format-row (widths row &optional row-num)
   (cl-flet ((num (type number string)
-                 (put-text-property 0 (length string) type number string)
-                 string))
+              (put-text-property 0 (length string) type number string)
+              string))
     (let ((col 0))
       (num :row row-num
            (apply #'concat
@@ -102,7 +102,7 @@ through the `*buffer-list*' variable.")
            (widths (apply #'cl-mapcar (compose '1+ #'max) lengths))
            ;; scale widths by buffer width
            (widths (mapcar (compose #'floor (curry #'* (/ (window-total-width)
-                                                (float (apply #'+ widths)))))
+                                                          (float (apply #'+ widths)))))
                            widths)))
       ;; write headers
       (when *buffer-headers*
@@ -156,7 +156,7 @@ through the `*buffer-list*' variable.")
   (cl-flet ((col () (or (get-text-property (point) :col) start-col)))
     (let ((start-col (col)))
       (while (= start-col (col))
-        (case direction
+        (cl-case direction
           (:forward (forward-char))
           (:backward (backward-char))))
       (when (eql direction :backward)

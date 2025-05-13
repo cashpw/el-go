@@ -178,7 +178,7 @@ This is used to re-send messages to keep the IGS server from timing out.")
 
 (cl-defmethod go-player-name ((igs igs) color)
   (with-igs igs (aget (igs-current-game)
-                      (case color
+                      (cl-case color
                         (:W :white-name)
                         (:B :black-name)))))
 
@@ -206,14 +206,14 @@ This is used to re-send messages to keep the IGS server from timing out.")
 
 (cl-defmethod go-quit ((igs igs))
   (with-igs igs
-    (if (number igs)
-        (progn
-          ;; TOOD: ensure still on our server-side observation list
-          ;;       (e.g., hasn't been removed after a resignation)
-          (when (active igs)
-            (igs-send (format "observe %d" (number igs))))
-          (setf (number igs) nil))
-      (igs-send "quit"))))
+            (if (number igs)
+                (progn
+                  ;; TOOD: ensure still on our server-side observation list
+                  ;;       (e.g., hasn't been removed after a resignation)
+                  (when (active igs)
+                    (igs-send (format "observe %d" (number igs))))
+                  (setf (number igs) nil))
+              (igs-send "quit"))))
 
 (cl-defmethod go-score ((igs igs))
   (signal 'unsupported-back-end-command (list igs :score)))
@@ -243,7 +243,7 @@ This is used to re-send messages to keep the IGS server from timing out.")
     (let* ((number  (read (match-string 1 string)))
            (type    (car (rassoc number igs-message-types)))
            (content (match-string 2 string)))
-      (case type
+      (cl-case type
         (:prompt
          (go-re-cond (or *igs-last-command* "")
            ("^games" (igs-list-games *igs-instance* *igs-games*))
@@ -276,10 +276,10 @@ This is used to re-send messages to keep the IGS server from timing out.")
 (defun igs-connect (igs)
   "Open a connection to `igs-server'."
   (cl-flet ((wait (prompt)
-                  (message "IGS waiting for %S..." prompt)
-                  (while (and (goto-char (or comint-last-input-end (point-min)))
-                              (not (re-search-forward prompt nil t)))
-                    (accept-process-output proc))))
+              (message "IGS waiting for %S..." prompt)
+              (while (and (goto-char (or comint-last-input-end (point-min)))
+                          (not (re-search-forward prompt nil t)))
+                (accept-process-output proc))))
     (let ((buffer (apply 'make-comint
                          igs-process-name
                          igs-telnet-command nil
@@ -393,8 +393,8 @@ This is used to re-send messages to keep the IGS server from timing out.")
   (if (aget (igs-current-game) :board)
       (with-current-buffer (buffer (aget (igs-current-game) :board))
         (with-backends backend
-          (when (equal (class-of backend) 'igs)
-            (setf (active backend) nil))))
+                       (when (equal (class-of backend) 'igs)
+                         (setf (active backend) nil))))
     (error "igs-handle-adjournment: no board!")))
 
 (defun igs-handle-resignation (color)
@@ -403,8 +403,8 @@ This is used to re-send messages to keep the IGS server from timing out.")
         (go-resign (aget (igs-current-game) :board))
         (with-current-buffer (buffer (aget (igs-current-game) :board))
           (with-backends backend
-            (when (equal (class-of backend) 'igs)
-              (setf (active backend) nil)))))
+                         (when (equal (class-of backend) 'igs)
+                           (setf (active backend) nil)))))
     (error "igs-handle-adjournment: no board!")))
 
 (defun igs-to-pos (color igs)
@@ -446,8 +446,8 @@ This is used to re-send messages to keep the IGS server from timing out.")
           (save-excursion
             (setf (number *igs-instance*) number)
             (make-instance 'board
-              :buffer (go-board *igs-instance*
-                                (make-instance 'sgf)))))
+                           :buffer (go-board *igs-instance*
+                                             (make-instance 'sgf)))))
     (when (aget (igs-current-game) :board)
       (igs-send (format "moves %s" number)))))
 
