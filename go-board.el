@@ -87,15 +87,15 @@
 
 (defun apply-move (board move)
   (cl-flet ((bset (val data)
-               (let ((data (if (listp (car data)) data (list data))))
-                 (setf (aref board (pos-to-index (aget data :pos)
-                                                 (board-size board)))
-                       (case val
-                         (:B  :B)
-                         (:W  :W)
-                         (:LB (aget data :label))
-                         (:LW (aget data :label))
-                         (t nil))))))
+              (let ((data (if (listp (car data)) data (list data))))
+                (setf (aref board (pos-to-index (aget data :pos)
+                                                (board-size board)))
+                      (case val
+                        (:B  :B)
+                        (:W  :W)
+                        (:LB (aget data :label))
+                        (:LW (aget data :label))
+                        (t nil))))))
     (case (move-type move)
       (:move
        (bset (car move) (cdr move))
@@ -160,8 +160,8 @@
 ;;; Visualization
 (defun board-header (board)
   (cl-flet ((hd (str hd)
-             (put-text-property 0 1 :type `(,hd . :offboard) str)
-             str))
+              (put-text-property 0 1 :type `(,hd . :offboard) str)
+              str))
     (let ((size (board-size board)))
       (concat "   "
               (hd " " :filler)
@@ -174,18 +174,18 @@
 (defun board-pos-to-string (board pos)
   (let ((size (board-size board)))
     (cl-flet ((emph (n)
-                 (cond
-                  ((= size 19)
-                   (or (= 3 n)
-                       (= 4 (- size n))
-                       (= n (/ (- size 1) 2))))
-                  ((= size 13)
-                   (or (= 3 n)
-                       (= 9 n)))
-                  ((= size 9)
-                   (or (= 2 n)
-                       (= 6 n)))))
-           (put (str prop val) (put-text-property 0 (length str) prop val str)))
+                (cond
+                 ((= size 19)
+                  (or (= 3 n)
+                      (= 4 (- size n))
+                      (= n (/ (- size 1) 2))))
+                 ((= size 13)
+                  (or (= 3 n)
+                      (= 9 n)))
+                 ((= size 9)
+                  (or (= 2 n)
+                      (= 6 n)))))
+              (put (str prop val) (put-text-property 0 (length str) prop val str)))
       (let* ((val (aref board (pos-to-index pos size)))
              (str (cond
                    ((equal val :W) white-piece)
@@ -238,19 +238,19 @@
 (defun go-board-paint (&optional start end)
   (interactive "r")
   (cl-flet ((ov (point face &optional back)
-             (let ((ovly (make-overlay point (1+ point))))
-               (overlay-put ovly 'go-pt point)
-               (overlay-put ovly 'face (sym-cat 'go-board face))
-               (when go-board-use-images
-                 (overlay-put ovly 'display
-                              (if (equal face 'filler)
-                                  '(space :width (18))
-                                (eval (sym-cat 'go-board 'image face back)))))
-               (push ovly *go-board-overlays*)))
-         (hide (point)
-               (let ((ovly (make-overlay point (1+ point))))
-                 (overlay-put ovly 'invisible t)
-                 (push ovly *go-board-overlays*))))
+              (let ((ovly (make-overlay point (1+ point))))
+                (overlay-put ovly 'go-pt point)
+                (overlay-put ovly 'face (sym-cat 'go-board face))
+                (when go-board-use-images
+                  (overlay-put ovly 'display
+                               (if (equal face 'filler)
+                                   '(space :width (18))
+                                 (eval (sym-cat 'go-board 'image face back)))))
+                (push ovly *go-board-overlays*)))
+            (hide (point)
+              (let ((ovly (make-overlay point (1+ point))))
+                (overlay-put ovly 'invisible t)
+                (push ovly *go-board-overlays*))))
     (let ((start (or start (point-min)))
           (end   (or end   (point-max))))
       (dolist (point (range start end))
@@ -364,7 +364,7 @@
                                     (go-completing-read
                                      (format "[%s] X pos: " color)
                                      (mapcar #'string
-                                             (mapcar #'gtp-num-to-char
+                                             (mapcar #'num-to-char
                                                      (range 1 *size*)))))
                                    0))
                             (1- (string-to-number
