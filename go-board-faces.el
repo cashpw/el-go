@@ -69,6 +69,10 @@
   '((t (:background "#cd9c67" :foreground "white")))
   "white piece on white territory")
 
+(defface go-board-filler
+  '((t (:background nil :foreground nil)))
+  "Invisible filler.")
+
 ;; Maybe use `face-remap-add-relative' to change image sizes.
 
 
@@ -88,7 +92,7 @@
 (defun go-board-cross (color)
   (mapconcat #'go-board-svg-trans
              `(((line (x1 . 3.125) (y1 . 3.125) (x2 . 21.875) (y2 . 21.875)
-                      (style . ,(format "stroke: %s;" color))))
+                 (style . ,(format "stroke: %s;" color))))
                ((line (x1 . 3.125) (y1 . 21.875) (x2 . 21.875) (y2 . 3.125)
                       (style . ,(format "stroke: %s;" color)))))
              ""))
@@ -96,7 +100,7 @@
 (defun go-board-label (color label)
   (go-board-svg-trans
    `((text (x . 8.75) (y . 16.25) (r . 12.25)
-           (style . ,(format "font-size:12.5;fill:%s;" color)))
+      (style . ,(format "font-size:12.5;fill:%s;" color)))
      ,label)))
 
 (defun go-board-mark (overlay mark)
@@ -114,8 +118,8 @@
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
     (go-board-svg-trans
      '((svg (xmlns . "http://www.w3.org/2000/svg")
-            (xmlns:xlink . "http://www.w3.org/1999/xlink")
-            (width . 25) (height . 25) (version . 1.0))
+        (xmlns:xlink . "http://www.w3.org/1999/xlink")
+        (width . 25) (height . 25) (version . 1.0))
        ,@body))))
 
 ;; TODO: To allow images to scale with text, this should return a
@@ -124,9 +128,9 @@
 ;;       appropriate for that size.
 (defmacro go-board-image (&rest body)
   ``(image :type svg :ascent center :data
-           ,(go-board-wrap
-              ((rect (width . 25) (height . 25) (fill . "#dcb35c")))
-              ,@body)))
+     ,(go-board-wrap
+       ((rect (width . 25) (height . 25) (fill . "#dcb35c")))
+       ,@body)))
 
 (defmacro go-board-image-sides (name &rest base)
   (declare (indent 1))
